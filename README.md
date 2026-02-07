@@ -28,6 +28,13 @@ Recommended environment variables:
 Project path: `/home/greenmangroup/balloono`
 App base URL: `https://greenmangroup.pythonanywhere.com/balloono`
 
+## Serving under a shared domain
+
+If you mount the app under a path (e.g. `/balloono`) using a shared WSGI
+dispatcher, set `URL_PREFIX` accordingly. For `DispatcherMiddleware` mapping
+`/balloono` to this app, set `URL_PREFIX` to an empty string so routes are at
+`/`.
+
 ### 1) Upload code
 
 Clone or upload this repo into `/home/greenmangroup/balloono`.

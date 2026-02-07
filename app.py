@@ -12,8 +12,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "balloono-dev-secret")
-URL_PREFIX = os.environ.get("URL_PREFIX", "/balloono").rstrip("/") or "/balloono"
-main_bp = Blueprint("main", __name__, url_prefix=URL_PREFIX)
+RAW_URL_PREFIX = os.environ.get("URL_PREFIX", "/balloono")
+URL_PREFIX = RAW_URL_PREFIX.rstrip("/")
+if URL_PREFIX and not URL_PREFIX.startswith("/"):
+    URL_PREFIX = f"/{URL_PREFIX}"
+BLUEPRINT_PREFIX = URL_PREFIX
+main_bp = Blueprint("main", __name__, url_prefix=BLUEPRINT_PREFIX)
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///balloono.db")
 engine_kwargs = {}
@@ -293,7 +297,9 @@ def _room_state(room):
 
 @app.route("/")
 def root_redirect():
-    return redirect(URL_PREFIX + "/")
+    if BLUEPRINT_PREFIX:
+        return redirect(BLUEPRINT_PREFIX + "/")
+    return index()
 
 
 @main_bp.route("/")
