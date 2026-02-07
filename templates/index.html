@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Balloono</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  </head>
+  <body>
+    <div class="frame">
+      <header class="hud">
+        <div class="hud__title">Balloono</div>
+        <div class="hud__room" id="roomLabel">Room: lobby</div>
+        <div class="hud__status" id="statusLabel">Connecting…</div>
+        <div class="hud__user" id="userLabel">Guest</div>
+      </header>
+
+      <main class="game">
+        <canvas id="gameCanvas" width="960" height="720"></canvas>
+
+        <aside class="panel">
+          <h2>Players</h2>
+          <ul id="scoreboard"></ul>
+          <div class="stats" id="statsPanel">
+            <div class="stats__row">Speed: <span id="statSpeed">1.00x</span></div>
+            <div class="stats__row">Capacity: <span id="statCapacity">1</span></div>
+            <div class="stats__row">Blast: <span id="statBlast">70</span></div>
+            <div class="stats__row">Banana: <span id="statBanana">None</span></div>
+          </div>
+          <div class="tips">
+            <h3>Controls</h3>
+            <p>Move: A/D or ←/→</p>
+            <p>Drop balloon: Space</p>
+            <p>Drop banana: B</p>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <div class="overlay" id="authOverlay">
+      <form id="authForm" class="join">
+        <h1 id="authTitle">Log in</h1>
+        <label>
+          Username
+          <input type="text" id="usernameInput" maxlength="32" autocomplete="username" />
+        </label>
+        <label>
+          Password
+          <input type="password" id="passwordInput" autocomplete="current-password" />
+        </label>
+        <button type="submit" id="authSubmit">Log in</button>
+        <button type="button" class="secondary" id="toggleAuth">Create account</button>
+        <p class="fineprint" id="authError"></p>
+      </form>
+    </div>
+
+    <div class="overlay hidden" id="joinOverlay">
+      <form id="joinForm" class="join">
+        <h1>Join the game</h1>
+        <label>
+          Room
+          <input type="text" id="roomInput" maxlength="24" placeholder="lobby" />
+        </label>
+        <button type="submit">Launch</button>
+        <p class="fineprint">Share the room name to play together.</p>
+      </form>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+  </body>
+</html>
