@@ -5,13 +5,15 @@ import uuid
 from datetime import datetime
 from threading import Lock
 
-from flask import Flask, jsonify, redirect, render_template, request, session, url_for
+from flask import Blueprint, Flask, jsonify, redirect, render_template, request, session, url_for
 from sqlalchemy import Column, DateTime, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, scoped_session, sessionmaker
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "balloono-dev-secret")
+URL_PREFIX = os.environ.get("URL_PREFIX", "/balloono").rstrip("/") or "/balloono"
+main_bp = Blueprint("main", __name__, url_prefix=URL_PREFIX)
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///balloono.db")
 engine_kwargs = {}
@@ -290,16 +292,21 @@ def _room_state(room):
 
 
 @app.route("/")
+def root_redirect():
+    return redirect(URL_PREFIX + "/")
+
+
+@main_bp.route("/")
 def index():
     return render_template("index.html")
 
 
-@app.route("/join")
+@main_bp.route("/join")
 def join_redirect():
-    return redirect(url_for("index"))
+    return redirect(url_for("main.index"))
 
 
-@app.post("/api/register")
+@main_bp.post("/api/register")
 def api_register():
     data = request.get_json(force=True, silent=True) or {}
     username = (data.get("username") or "").strip().lower()[:32]
@@ -317,7 +324,7 @@ def api_register():
     return jsonify({"id": user.id, "username": user.username})
 
 
-@app.post("/api/login")
+@main_bp.post("/api/login")
 def api_login():
     data = request.get_json(force=True, silent=True) or {}
     username = (data.get("username") or "").strip().lower()
@@ -330,13 +337,13 @@ def api_login():
     return jsonify({"id": user.id, "username": user.username})
 
 
-@app.post("/api/logout")
+@main_bp.post("/api/logout")
 def api_logout():
     session.clear()
     return jsonify({"ok": True})
 
 
-@app.get("/api/me")
+@main_bp.get("/api/me")
 def api_me():
     user = _current_user()
     if not user:
@@ -356,7 +363,7 @@ def api_me():
     )
 
 
-@app.route("/api/join", methods=["POST"])
+@main_bp.route("/api/join", methods=["POST"])
 def api_join():
     user = _current_user()
     if not user:
@@ -380,7 +387,7 @@ def api_join():
     return jsonify({"playerId": player_id, "state": state})
 
 
-@app.route("/api/input", methods=["POST"])
+@main_bp.route("/api/input", methods=["POST"])
 def api_input():
     data = request.get_json(force=True, silent=True) or {}
     room_id = data.get("roomId")
@@ -438,7 +445,7 @@ def api_input():
     return jsonify({"ok": True})
 
 
-@app.route("/api/poll", methods=["GET"])
+@main_bp.route("/api/poll", methods=["GET"])
 def api_poll():
     room_id = request.args.get("roomId")
     player_id = request.args.get("playerId")
@@ -458,6 +465,9 @@ def api_poll():
         state = _room_state(room)
 
     return jsonify(state)
+
+
+app.register_blueprint(main_bp)
 
 
 if __name__ == "__main__":

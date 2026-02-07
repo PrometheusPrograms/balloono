@@ -11,7 +11,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Open `http://127.0.0.1:5000` and join a room.
+Open `http://127.0.0.1:5000/balloono` and join a room.
 
 ## Auth and storage
 
@@ -26,6 +26,7 @@ Recommended environment variables:
 ## PythonAnywhere deployment
 
 Project path: `/home/greenmangroup/balloono`
+App base URL: `https://greenmangroup.pythonanywhere.com/balloono`
 
 ### 1) Upload code
 
