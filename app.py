@@ -307,6 +307,11 @@ def index():
     return render_template("index.html")
 
 
+@main_bp.route("/blank")
+def blank():
+    return render_template("blank.html")
+
+
 @main_bp.route("/join")
 def join_redirect():
     return redirect(url_for("main.index"))
