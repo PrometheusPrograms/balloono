@@ -64,7 +64,7 @@ def main():
     username = os.environ.get("PA_USERNAME")
     token = os.environ.get("PA_TOKEN")
     host = os.environ.get("PA_HOST", "www.pythonanywhere.com")
-    target_root = os.environ.get("PA_TARGET", "/home/greenmangroup/balloono")
+    target_root = os.environ.get("PA_TARGET", "/home/hackit/code")
     domain = os.environ.get("PA_DOMAIN")
 
     if not username or not token:
